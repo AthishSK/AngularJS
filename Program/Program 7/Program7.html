@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html ng-app="userApp">
+<head>
+    <title>User Management</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        var app = angular.module('userApp', []);
+
+        app.controller('UserController', function($scope) {
+            $scope.users = [
+                { id: 1, name: 'John', email: 'john@example.com' },
+                { id: 2, name: 'Jane', email: 'jane@example.com' },
+                { id: 3, name: 'Doe', email: 'doe@example.com' }
+            ];
+
+            $scope.newUser = {};
+
+            $scope.addUser = function() {
+                $scope.users.push({
+                    id: $scope.users.length + 1,
+                    name: $scope.newUser.name,
+                    email: $scope.newUser.email
+                });
+                $scope.newUser = {};
+            };
+
+            $scope.editUser = function(user) {
+                $scope.currentUser = user;
+                $scope.editMode = true;
+            };
+
+            $scope.updateUser = function() {
+                $scope.editMode = false;
+                $scope.currentUser = {};
+            };
+
+            $scope.deleteUser = function(user) {
+                var index = $scope.users.indexOf(user);
+                $scope.users.splice(index, 1);
+            };
+        });
+    </script>
+</head>
+<body>
+    <div ng-controller="UserController">
+        <h2>User Management</h2>
+        <form ng-submit="addUser()">
+            <input type="text" ng-model="newUser.name" placeholder="Name" required>
+            <input type="email" ng-model="newUser.email" placeholder="Email" required>
+            <button type="submit">Add User</button>
+        </form>
+        <hr>
+        <ul>
+            <li ng-repeat="user in users">
+                <span>{{ user.name }} ({{ user.email }})</span>
+                <button ng-click="editUser(user)">Edit</button>
+                <button ng-click="deleteUser(user)">Delete</button>
+            </li>
+        </ul>
+        <div ng-show="editMode">
+            <h3>Edit User</h3>
+            <form ng-submit="updateUser()">
+                <input type="text" ng-model="currentUser.name" required>
+                <input type="email" ng-model="currentUser.email" required>
+                <button type="submit">Save</button>
+                <button type="button" ng-click="editMode = false">Cancel</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
